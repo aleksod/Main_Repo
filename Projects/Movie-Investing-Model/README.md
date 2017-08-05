@@ -30,6 +30,5 @@ def invboxcox(y,ld):
    else:
       return(np.exp(np.log(ld*y+1)/ld))
 ```
-You can find my source code for the project [here](https://github.com/aleksod/Movie-Investing-Model).
 
 <iframe src="https://docs.google.com/presentation/d/15nYh2ICHJ9ZoVk-m5DHrCMui4yDV3N7i2V4mADXclHw/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
