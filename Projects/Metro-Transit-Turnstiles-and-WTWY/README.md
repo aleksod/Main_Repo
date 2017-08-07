@@ -1,9 +1,5 @@
 Today I would like to shed more light on the first project I have previously mentioned in [my last blog post](https://aleksod.github.io/Project-1-Presentation-and-More/). The premise of the task is as follows:  
 
-## Project Benson
-
-![Detective Benson](../images/detective_benson.jpg)
-
 ### Back Story
 
 An email from a potential client:
