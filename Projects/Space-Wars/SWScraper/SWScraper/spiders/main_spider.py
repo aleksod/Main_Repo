@@ -60,9 +60,9 @@ class StarTrekSpider(scrapy.Spider):
 
     def parse_ST(self, response):
             url = response.request.meta['url']
-            series = meta['series']
-            start = meta['start']
-            end = meta['end']
+            series = response.request.meta['series']
+            start = response.request.meta['start']
+            end = response.request.meta['end']
             raw_text = response.xpath('//text()').extract()
 
             yield {
