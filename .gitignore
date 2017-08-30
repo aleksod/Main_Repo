@@ -1,3 +1,4 @@
+Projects/HeliTrack/temp/
 Projects/HeliTrack/data
 Projects/Space-Wars/Data/df.pkl
 Projects/Space-Wars/Data/dtm_nmf.pkl
@@ -7,21 +8,17 @@ Projects/Space-Wars/Data/stopwords.txt
 Projects/Space-Wars/Data/st_scripts.json
 Projects/HeliTrack/data
 Projects/Space-Wars/nohup.out
-Projects/Exoplanet-Hunting/.ipynb_checkpoints/
 Projects/Exoplanet-Hunting/Data/exoTest.csv
 Projects/Exoplanet-Hunting/Data/exoTrain.csv
 Projects/Exoplanet-Hunting/Kaggle_kernel.ipynb
-Projects/Metro-Transit-Turnstiles-and-WTWY/.ipynb_checkpoints/
 Projects/Metro-Transit-Turnstiles-and-WTWY/jordancode.py
 Projects/Metro-Transit-Turnstiles-and-WTWY/personal_contribution/
 Projects/Metro-Transit-Turnstiles-and-WTWY/usefulcode.py
-Projects/Movie-Investing-Model/.ipynb_checkpoints/
 Projects/Movie-Investing-Model/main-backup_cleaned_data.ipynb
 Projects/Movie-Investing-Model/main_bs4_scraper.py
 Projects/Movie-Investing-Model/my_data.pkl
 Projects/Movie-Investing-Model/my_data2.pkl
 Projects/Movie-Investing-Model/supplementary_bs4_scraper.py
-Projects/Space-Wars/.ipynb_checkpoints/
 Projects/Space-Wars/Data/415.txt
 Projects/Space-Wars/Data/420.txt
 Projects/Space-Wars/Data/df.pkl
