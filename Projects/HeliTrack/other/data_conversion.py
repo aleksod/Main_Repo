@@ -2,7 +2,7 @@
 import sys, os
 
 # Create a hi module in your home directory.
-home_dir = os.path.expanduser("~/Documents/Metis/models/")
+home_dir = os.path.expanduser("/Users/aleksod/Documents/Metis/models/")
 
 # # Add the home directory to sys.path
 sys.path.append(home_dir)
@@ -30,21 +30,21 @@ classes_labels = {
     "DCR":              11
 }
 
-video_name = "data/Neovision2-Training-Heli-001.mpg"
+video_name = "raw_data/Neovision2-Training-Heli-001.mpg"
 
-'''Extracting frames from a video'''
-cap = cv2.VideoCapture(video_name)
-print(cap)
-success,image = cap.read()
-count = 0
-success = True
-while success:
-    success,image = cap.read()
-    cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
-    if cv2.waitKey(10) == 27:                     # exit if Escape is hit
-        break
-    count += 1
-cap.release()
+# '''Extracting frames from a video'''
+# cap = cv2.VideoCapture(video_name)
+# print(cap)
+# success,image = cap.read()
+# count = 0
+# success = True
+# while success:
+#     success,image = cap.read()
+#     cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
+#     if cv2.waitKey(10) == 27:                     # exit if Escape is hit
+#         break
+#     count += 1
+# cap.release()
 
 cap = cv2.VideoCapture(video_name)
 ret, frame = cap.read()
@@ -75,10 +75,9 @@ import tensorflow as tf
 
 from object_detection.utils import dataset_util
 
-
 flags = tf.app.flags
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-FLAGS = flags.FLAGS
+# FLAGS = flags.FLAGS
 
 
 def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes):
@@ -117,7 +116,7 @@ def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymax
 
 
 def main(_):
-    writer = tf.python_io.TFRecordWriter('data/TFRecords/train.record')
+    writer = tf.python_io.TFRecordWriter('../data/train.record')
 
     # TODO(user): Write code to read in your dataset to examples variable
 
@@ -167,7 +166,7 @@ def main(_):
         del df2, df3x, df3y
         gc.collect()
 
-        img = ndimage.imread(filename) #cv2.imread(filename)
+        img = tf.image.encode_jpeg(filename) #ndimage.imread(filename) #cv2.imread(filename)
         tf_example = create_tf_example(img, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes)
         writer.write(tf_example.SerializeToString())
 
