@@ -1,19 +1,16 @@
-training_folder = "~/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/train"
-testing_folder = "~/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/test"
-holdout_folder = "~/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/holdout"
+training_folder = "/Users/aleksod/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/train"
+testing_folder = "/Users/aleksod/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/test"
+holdout_folder = "/Users/aleksod/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/holdout"
 
-train_writer_path = '../data/train.record'
-test_writer_path = '../data/train.record'
-holdout_writer_path = '../data/train.record'
+writer_path = '../data/train.record' #'../data/train.record' #'../data/train.record'
 
-filepath = training folder
-writer_path = train_writer_path
+filepath = training_folder
 
 '''Append the path to TensorFlow object detection scripts'''
 import sys, os
 
 # Create a hi module in your home directory.
-home_dir = os.path.expanduser("~/Documents/Metis/models")
+home_dir = os.path.expanduser("/Users/aleksod/Documents/Metis/models")
 
 # # Add the home directory to sys.path
 sys.path.append(home_dir)
@@ -50,7 +47,7 @@ flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 # FLAGS = flags.FLAGS
 
 
-def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes):
+def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes, width, height):
     # TODO(user): Populate the following variables from your example.
     # height = None # Image height
     # width = None # Image width
@@ -86,40 +83,59 @@ def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymax
 
 
 def main(_):
-    writer = tf.python_io.TFRecordWriter(train_writer_path)
+    writer = tf.python_io.TFRecordWriter(writer_path)
 
     # TODO(user): Write code to read in your dataset to examples variable
-    extensions = (".mpg") #e.g. only iterate through videos
+    extensions = [".mpg"] #e.g. only iterate through videos
 
-    for subdir, dirs, files in os.walk(rootdir):
-        for file in files:
-            ext = os.path.splitext(file)[-1].lower()
+    # print(filepath)
+    # print("Does this file exist?", os.path.isfile(filepath))
+    # print(os.walk(filepath))
+
+    for subdir, dirs, files in os.walk(filepath):
+        for filename in files:
+            ext = os.path.splitext(filename)[-1].lower()
             if ext in extensions:
 
-                video_name = os.path.join(subdir, file)
+                video_name = os.path.join(subdir, filename)
                 print("Now working on {}".format(video_name))
+                print("Does this file exist?", os.path.isfile(video_name))
 
                 '''Extracting frames from a video'''
-                cap = cv2.VideoCapture(video_name)
-                print(cap)
-                success,image = cap.read()
+
+                vidcap = cv2.VideoCapture(video_name)
+                success,image = vidcap.read()
                 count = 0
                 success = True
                 while success:
-                    success,image = cap.read()
+                    if count == 0:
+                        width = max(image.shape)
+                        height = min(image.shape)
+                    success,image = vidcap.read()
+                    print('Read a new frame: ', success, '\t filepath:', "temp/frame%d.jpg" % count)
                     cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
-                    if cv2.waitKey(10) == 27:                     # exit if Escape is hit
-                        break
                     count += 1
-                cap.release()
 
-                cap = cv2.VideoCapture(video_name)
-                ret, frame = cap.read()
-                width = frame.shape[1]
-                height = frame.shape[0]
-                cap.release()
+                # cap = cv2.VideoCapture(video_name)
+                # print(cap)
+                # count = 0
+                # while True:
+                #     success,image = cap.read()
+                #     if success == True:
+                #         if count == 0:
+                #             width = image.shape[1]
+                #             height = image.shape[0]
+                #         success,image = cap.read()
+                #         # print("Extracting frame #{}".format(count))
+                #         cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
+                #         count += 1
+                #         if cv2.waitKey(10) == 27:                     # exit if Escape is hit
+                #             print("Finished the video file")
+                #             break
 
-                df = pd.read_csv(video_name.replace('.mpg', '.csv')) #'temp/Neovision2-Training-Heli-002.csv')
+                vidcap.release()
+
+                df = pd.read_csv(video_name.replace(extensions[0], '.csv'))
                 ind = df[df.ObjectType.isnull()].index
                 df = df.query('index not in @ind')
 
@@ -156,8 +172,8 @@ def main(_):
                         f = imageFile.read()
                         img = bytes(f)
 
-                    tf_example = create_tf_example(img, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes)
-                    train_writer.write(tf_example.SerializeToString())
+                    tf_example = create_tf_example(img, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes, width, height)
+                    writer.write(tf_example.SerializeToString())
 
                     # for example in examples:
                     #     tf_example = create_tf_example(example)
