@@ -1,23 +1,26 @@
-training_folder = "/Users/aleksod/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/train"
-testing_folder = "/Users/aleksod/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/test"
-holdout_folder = "/Users/aleksod/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/holdout"
+training_folder = "raw_data/train"
+testing_folder = "raw_data/test"
+holdout_folder = "raw_data/holdout"
 
 writer_path = '../data/train.record' #'../data/train.record' #'../data/train.record'
 
 filepath = training_folder
 
+'''Import PIL.Image to get frame dimensions'''
+from PIL import Image
+
 '''Append the path to TensorFlow object detection scripts'''
 import sys, os
 
 # Create a hi module in your home directory.
-home_dir = os.path.expanduser("/Users/aleksod/Documents/Metis/models")
+home_dir = os.path.expanduser("/Users/icarus/Documents/Metis/models")
 
 # # Add the home directory to sys.path
 sys.path.append(home_dir)
 
 import numpy as np
 import cv2
-import imutils
+# import imutils
 
 import pandas as pd
 from scipy import ndimage
@@ -44,7 +47,7 @@ from object_detection.utils import dataset_util
 
 flags = tf.app.flags
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-# FLAGS = flags.FLAGS
+FLAGS = flags.FLAGS
 
 
 def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes, width, height):
@@ -83,6 +86,7 @@ def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymax
 
 
 def main(_):
+
     writer = tf.python_io.TFRecordWriter(writer_path)
 
     # TODO(user): Write code to read in your dataset to examples variable
@@ -91,6 +95,9 @@ def main(_):
     # print(filepath)
     # print("Does this file exist?", os.path.isfile(filepath))
     # print(os.walk(filepath))
+    
+    # print(filepath)
+    #print(list(os.walk(filepath)))
 
     for subdir, dirs, files in os.walk(filepath):
         for filename in files:
@@ -108,32 +115,15 @@ def main(_):
                 count = 0
                 success = True
                 while success:
-                    if count == 0:
-                        width = max(image.shape)
-                        height = min(image.shape)
                     success,image = vidcap.read()
                     print('Read a new frame: ', success, '\t filepath:', "temp/frame%d.jpg" % count)
                     cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
                     count += 1
 
-                # cap = cv2.VideoCapture(video_name)
-                # print(cap)
-                # count = 0
-                # while True:
-                #     success,image = cap.read()
-                #     if success == True:
-                #         if count == 0:
-                #             width = image.shape[1]
-                #             height = image.shape[0]
-                #         success,image = cap.read()
-                #         # print("Extracting frame #{}".format(count))
-                #         cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
-                #         count += 1
-                #         if cv2.waitKey(10) == 27:                     # exit if Escape is hit
-                #             print("Finished the video file")
-                #             break
-
                 vidcap.release()
+
+                im = Image.open("temp/frame10.jpg")
+                width, height = im.size
 
                 df = pd.read_csv(video_name.replace(extensions[0], '.csv'))
                 ind = df[df.ObjectType.isnull()].index
@@ -146,6 +136,10 @@ def main(_):
                     df2 = df[df.Frame == frame]
                     filename = "temp/frame%d.jpg" % frame
                     image_format = b'jpg'
+
+                    width = max(image.shape)
+                    height = min(image.shape)
+                    print(width, height)
 
                     df3x = df2.iloc[:,[1,3,5,7]]
                     df3y = df2.iloc[:,[2,4,6,8]]
