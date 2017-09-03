@@ -1,26 +1,28 @@
-training_folder = "~/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/train"
-testing_folder = "~/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/test"
-holdout_folder = "~/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/holdout"
+training_folder = "/home/icarus/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/train"
+# video_prefix = "raw_data/train/
 
-train_writer_path = '../data/train.record'
-test_writer_path = '../data/train.record'
-holdout_writer_path = '../data/train.record'
+testing_folder = "/home/icarus/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/test"
+holdout_folder = "/home/icarus/Documents/Metis/Main_Repo/Projects/HeliTrack/other/raw_data/holdout"
 
-filepath = training folder
+train_writer_path = '/home/icarus/Documents/Metis/Main_Repo/Projects/HeliTrack/data/train.record'
+test_writer_path = '/home/icarus/Documents/Metis/Main_Repo/Projects/HeliTrack/data/train.record'
+holdout_writer_path = '/home/icarus/Documents/Metis/Main_Repo/Projects/HeliTrack/data/train.record'
+
+filepath = training_folder
 writer_path = train_writer_path
 
 '''Append the path to TensorFlow object detection scripts'''
 import sys, os
 
 # Create a hi module in your home directory.
-home_dir = os.path.expanduser("~/Documents/Metis/models")
+home_dir = os.path.expanduser("/home/icarus/Documents/Metis/models")
 
 # # Add the home directory to sys.path
 sys.path.append(home_dir)
 
 import numpy as np
 import cv2
-import imutils
+# import imutils
 
 import pandas as pd
 from scipy import ndimage
@@ -47,7 +49,7 @@ from object_detection.utils import dataset_util
 
 flags = tf.app.flags
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-# FLAGS = flags.FLAGS
+FLAGS = flags.FLAGS
 
 
 def create_tf_example(example, filename, image_format, xmins, ymins, xmaxs, ymaxs, classes_text, classes):
@@ -89,37 +91,35 @@ def main(_):
     writer = tf.python_io.TFRecordWriter(train_writer_path)
 
     # TODO(user): Write code to read in your dataset to examples variable
-    extensions = (".mpg") #e.g. only iterate through videos
+    extensions = [".mpg"] #e.g. only iterate through videos
 
-    for subdir, dirs, files in os.walk(rootdir):
-        for file in files:
-            ext = os.path.splitext(file)[-1].lower()
+    for subdir, dirs, files in os.walk(filepath):
+        for filename in files:
+            ext = os.path.splitext(filename)[-1].lower()
             if ext in extensions:
 
-                video_name = os.path.join(subdir, file)
+                video_name = os.path.join(subdir, filename)
                 print("Now working on {}".format(video_name))
+		print("Does this file exist?", os.path.isfile(video_name)) 
 
                 '''Extracting frames from a video'''
                 cap = cv2.VideoCapture(video_name)
                 print(cap)
-                success,image = cap.read()
-                count = 0
-                success = True
-                while success:
+		while True:
                     success,image = cap.read()
-                    cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
-                    if cv2.waitKey(10) == 27:                     # exit if Escape is hit
-                        break
-                    count += 1
+                    count = 0
+		    if success == True:
+			width = image.shape[1]
+                	height = image.shape[0]
+	                success,image = cap.read()
+			print("Extracting frame #{}".format(count))
+			cv2.imwrite("temp/frame%d.jpg" % count, image)     # save frame as JPEG file
+	                count += 1
+			if success == False:
+			    break
                 cap.release()
 
-                cap = cv2.VideoCapture(video_name)
-                ret, frame = cap.read()
-                width = frame.shape[1]
-                height = frame.shape[0]
-                cap.release()
-
-                df = pd.read_csv(video_name.replace('.mpg', '.csv')) #'temp/Neovision2-Training-Heli-002.csv')
+                df = pd.read_csv(video_name.replace(extensions[0], '.csv'))
                 ind = df[df.ObjectType.isnull()].index
                 df = df.query('index not in @ind')
 
