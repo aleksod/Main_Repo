@@ -2,10 +2,13 @@
 Usage:
   # From tensorflow/models/
   # Create train data:
-  python generate_tfrecord.py --csv_input=data/train_labels.csv  --output_path=train.record
+  python3 generate_tfrecord.py --csv_input=../data/train_labels.csv  --output_path=../data/train.record
 
   # Create test data:
-  python generate_tfrecord.py --csv_input=data/test_labels.csv  --output_path=test.record
+  python3 generate_tfrecord.py --csv_input=../data/test_labels.csv  --output_path=../data/test.record
+  
+  # Create holdout data:
+  python3 generate_tfrecord.py --csv_input=../data/holdout_labels.csv  --output_path=../data/holdout.record
 """
 # from __future__ import division
 # from __future__ import print_function
@@ -61,13 +64,13 @@ def split(df, group):
 
 def create_tf_example(group, path):
     with tf.gfile.GFile(os.path.join(path, '{}'.format(group.filename)), 'rb') as fid:
-        encoded_jpg = fid.read()
-    encoded_jpg_io = io.BytesIO(encoded_jpg)
-    image = Image.open(encoded_jpg_io)
+        encoded_png = fid.read()
+    encoded_png_io = io.BytesIO(encoded_png)
+    image = Image.open(encoded_png_io)
     width, height = image.size
 
     filename = group.filename.encode('utf8')
-    image_format = b'jpg'
+    image_format = b'png'
     xmins = []
     xmaxs = []
     ymins = []
@@ -76,6 +79,7 @@ def create_tf_example(group, path):
     classes = []
 
     for index, row in group.object.iterrows():
+        
         xmins.append(row['xmin'] / width)
         xmaxs.append(row['xmax'] / width)
         ymins.append(row['ymin'] / height)
@@ -88,7 +92,7 @@ def create_tf_example(group, path):
         'image/width': dataset_util.int64_feature(width),
         'image/filename': dataset_util.bytes_feature(filename),
         'image/source_id': dataset_util.bytes_feature(filename),
-        'image/encoded': dataset_util.bytes_feature(encoded_jpg),
+        'image/encoded': dataset_util.bytes_feature(encoded_png),
         'image/format': dataset_util.bytes_feature(image_format),
         'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
         'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
