@@ -6,8 +6,8 @@ writer_path = '../data/train.record' #'../data/train.record' #'../data/train.rec
 
 filepath = training_folder
 
-'''Import PIL.Image to get frame dimensions'''
-from PIL import Image
+# '''Import PIL.Image to get frame dimensions'''
+# from PIL import Image
 
 '''Append the path to TensorFlow object detection scripts'''
 import sys, os
@@ -95,7 +95,7 @@ def main(_):
     # print(filepath)
     # print("Does this file exist?", os.path.isfile(filepath))
     # print(os.walk(filepath))
-    
+
     # print(filepath)
     #print(list(os.walk(filepath)))
 
