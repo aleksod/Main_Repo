@@ -54,3 +54,17 @@ Projects/Space-Wars/topic.model.state
 Projects/Space-Wars/topics.sublime-workspace
 Projects/Space-Wars/vis1.html
 Projects/Exoplanet-Hunting/index.html
+Projects/Space-Wars/.ipynb_checkpoints/
+Projects/Space-Wars/Data/df.pkl
+Projects/Space-Wars/Data/ldamodel1.pkl
+Projects/Space-Wars/Data/st_scripts.json
+Projects/Space-Wars/SWScraper/SWScraper/__pycache__/
+Projects/Space-Wars/SWScraper/SWScraper/spiders/__pycache__/
+Projects/Space-Wars/corpus.mm
+Projects/Space-Wars/corpus.mm.index
+Projects/Space-Wars/dictionary.dict
+Projects/Space-Wars/nohup.out
+Projects/Space-Wars/topic.model
+Projects/Space-Wars/topic.model.expElogbeta.npy
+Projects/Space-Wars/topic.model.id2word
+Projects/Space-Wars/topic.model.state
