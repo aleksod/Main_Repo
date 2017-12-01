@@ -74,7 +74,7 @@ turnstiles_daily[["PREV_DATE", "PREV_ENTRIES"]] = (turnstiles_daily
 
 
 ```
-After look at the resultant data, a small minority of turnstiles actually had counters running in reverse!
+After looking at the resultant data, a small minority of turnstiles actually had counters running in reverse!
 ```python
 (turnstiles_daily[turnstiles_daily["ENTRIES"] < turnstiles_daily["PREV_ENTRIES"]]
     .groupby(["C/A", "UNIT", "SCP", "STATION"])
